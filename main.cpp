@@ -1,24 +1,22 @@
-#include <SFML/Graphics.hpp>
 #include <algorithm>
 #include <cmath>
-#define key_pressed sf::Keyboard::isKeyPressed
-#define SPEED (1.f / 10.f / 2.f)
-#define WIDTH 50.f
-enum Direction
-{
-	NORTH = 600,
-	SOUTH = 0,
-	EAST = 800,
-	WEST = 0
-};
+#include <vector>
+#include <SFML/Graphics.hpp>
+#define key_pressed(k) sf::Keyboard::isKeyPressed(sf::Keyboard::k)
+#define FPS 60
+#define SIZE 50.f
+#define WIDTH 800.f
+#define HEIGHT 600.f
+#define SPEED 5.f
 float clamp(float min, float n, float max)
 {
 	return std::min(std::max(min, n), max);
 }
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode(EAST, NORTH), "Whalefall");
-	sf::RectangleShape player(sf::Vector2f(WIDTH, WIDTH));
+	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "Whalefall");
+	sf::RectangleShape player(sf::Vector2f(SIZE, SIZE));
+	window.setFramerateLimit(FPS);
 	player.setFillColor(sf::Color::Red);
 	player.setPosition(375.f, 275.f);
 	while (window.isOpen())
@@ -27,32 +25,31 @@ int main()
 		while (window.pollEvent(event))
 		{
 			if (event.type == sf::Event::Closed ||
-				key_pressed(sf::Keyboard::Q) ||
-				key_pressed(sf::Keyboard::Escape))
+				key_pressed(Q) || key_pressed(Escape))
 			{
 				window.close();
 			}
 		}
 		float x, y = 0.f;
-		if (key_pressed(sf::Keyboard::Up))
+		if (key_pressed(Up) || key_pressed(W))
 		{
-			y = 1.f;
+			y = 1;
 		}
-		else if (key_pressed(sf::Keyboard::Down))
+		else if (key_pressed(Down) || key_pressed(S))
 		{
-			y = -1.f;
+			y = -1;
 		}
 		else
 		{
 			y = 0.f;
 		}
-		if (key_pressed(sf::Keyboard::Left))
+		if (key_pressed(Left) || key_pressed(A))
 		{
-			x = -1.f;
+			x = -1;
 		}
-		else if (key_pressed(sf::Keyboard::Right))
+		else if (key_pressed(Right) || key_pressed(D))
 		{
-			x = 1.f;
+			x = 1;
 		}
 		else
 		{
@@ -63,12 +60,12 @@ int main()
 						  : SPEED;
 		player.move(speed * x, speed * -y);
 		window.clear(sf::Color::Black);
-		player.setPosition(clamp(WEST,
+		player.setPosition(clamp(0,
 								 player.getPosition().x,
-								 EAST - WIDTH),
-						   clamp(SOUTH,
+								 WIDTH - SIZE),
+						   clamp(0,
 								 player.getPosition().y,
-								 NORTH - WIDTH));
+								 HEIGHT - SIZE));
 		window.draw(player);
 		window.display();
 	}
